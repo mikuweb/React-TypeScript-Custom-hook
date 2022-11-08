@@ -4,17 +4,15 @@ import axios from "axios";
 import { User } from "./types/api/user";
 import { useState } from "react";
 
-const user = {
-  id: 1,
-  name: "みく",
-  email: "123abc@abc.com",
-  address: "address street"
-};
-
 export default function App() {
   const [userProfiles, setUserProfiles] = useState<Array<userProfile>>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
 
   const onClickFetchUser = () => {
+    setLoading(true);
+    setError(false);
+
     axios
       .get<Array<User>>("https://jsonplaceholder.typicode.com/users")
       .then((res) => {
@@ -25,14 +23,29 @@ export default function App() {
           address: `${user.address.city}${user.address.suite}${user.address.street}`
         }));
         setUserProfiles(data);
+      })
+      .catch(() => {
+        setError(true);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
   return (
     <div className="App">
       <button onClick={onClickFetchUser}>Get Data</button>
-      {userProfiles.map((user) => (
-        <UserCard key={user.id} user={user} />
-      ))}
+      <br />
+      {error ? (
+        <p style={{ color: "red" }}>Failure to Get data!</p>
+      ) : loading ? (
+        <p>Loading...</p>
+      ) : (
+        <>
+          {userProfiles.map((user) => (
+            <UserCard key={user.id} user={user} />
+          ))}
+        </>
+      )}
     </div>
   );
 }
