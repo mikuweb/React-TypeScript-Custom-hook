@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
-import { userProfiles } from "../types/userProfiles";
+import { userProfile } from "../types/userProfiles";
 import { User } from "../types/api/user";
 
 // 全ユーザー一覧を取得するカスタムフック
